@@ -40,6 +40,16 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
+class MeSerializer(serializers.ModelSerializer):
+    is_admin = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "date_joined", "is_admin"]
+
+    def get_is_admin(self, obj):
+        return bool(obj.is_staff or obj.is_superuser)
+
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
 
