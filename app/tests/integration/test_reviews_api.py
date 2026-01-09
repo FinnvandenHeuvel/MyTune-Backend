@@ -7,10 +7,11 @@ from core.domain.models import Review
 
 
 class ReviewsAPITest(APITestCase):
-
     def setUp(self):
         self.client = APIClient()
-        self.url = reverse("reviews")
+
+        self.list_url = reverse("reviews-list")  # GET /reviews/
+        self.create_url = reverse("reviews-create")  # POST /reviews/new/
 
         # Test user
         self.user = User.objects.create_user(
@@ -57,13 +58,13 @@ class ReviewsAPITest(APITestCase):
 
     def test_get_all_reviews(self):
         """Should return all reviews."""
-        response = self.client.get(self.url)
+        response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3)
 
     def test_get_reviews_filtered_by_artist_id(self):
         """Should return reviews for a specific artist_id."""
-        response = self.client.get(self.url, {"artist_id": "123"})
+        response = self.client.get(self.list_url, {"artist_id": "123"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Two reviews have artist_id="123"
@@ -71,7 +72,7 @@ class ReviewsAPITest(APITestCase):
 
     def test_get_reviews_filtered_by_album_id(self):
         """Should return reviews for a specific album_id."""
-        response = self.client.get(self.url, {"album_id": "A1"})
+        response = self.client.get(self.list_url, {"album_id": "A1"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # One review has album_id="A1"
@@ -90,7 +91,7 @@ class ReviewsAPITest(APITestCase):
             "rating": 5,
         }
 
-        response = self.client.post(self.url, payload)
+        response = self.client.post(self.create_url, payload)
 
         self.assertIn(
             response.status_code,
@@ -110,16 +111,15 @@ class ReviewsAPITest(APITestCase):
             "rating": 5,
         }
 
-        response = self.client.post(self.url, payload)
+        response = self.client.post(self.create_url, payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_post_invalid_data_fails(self):
         """Missing required fields should return 400."""
-
         client = APIClient()
         client.force_authenticate(self.user)
 
         payload = {"title": "", "artist": "Artist C", "content": "", "rating": ""}
 
-        response = client.post(self.url, payload)
+        response = client.post(self.create_url, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
