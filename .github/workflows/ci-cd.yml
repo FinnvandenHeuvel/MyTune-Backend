@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,6 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install test dependencies
+        run: |
+          pip install pytest pytest-django
+
       - name: Install lint tools
         run: |
           pip install ruff black
@@ -35,14 +40,17 @@ jobs:
         run: |
           black --check .
 
-      - name: Run tests
+      - name: Run tests (pytest)
+        env:
+          DJANGO_SETTINGS_MODULE: app.settings_test   # 🔁 CHANGE if needed
         run: |
-          python manage.py test
+          pytest -q
 
   deploy_and_verify:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
     steps:
       - name: Trigger Render deploy hook
         env:
