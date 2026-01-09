@@ -1,3 +1,4 @@
+from django.views.decorators.http import require_http_methods, require_POST
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -13,6 +14,7 @@ from core.interface.api.serializers import ReviewSerializer
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticatedOrReadOnly])
+@require_http_methods(["GET", "POST"])
 def reviews(request):
     if request.method == "GET":
         artist_id = request.GET.get("artist_id")
@@ -32,6 +34,7 @@ def reviews(request):
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
+@require_POST
 def review_delete(request, pk):
     _, err = delete_review_as_admin(user=request.user, pk=pk)
     if err == "Not allowed":
