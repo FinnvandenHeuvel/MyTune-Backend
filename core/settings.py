@@ -56,7 +56,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-ROOT_URLCONF = "core.urls"
+ROOT_URLCONF = "app.urls"
 WSGI_APPLICATION = "core.wsgi.application"
 
 TEMPLATES = [
