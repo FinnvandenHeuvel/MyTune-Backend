@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
+import sys
 
 from pathlib import Path
 
@@ -25,7 +27,10 @@ SECRET_KEY = 'django-insecure-&vi3f_pnyq70c6v^w%&#$-x5)upakji2r2c**19m42xexrzy2x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1"
+).split(",")
 
 
 # Application definition
@@ -145,8 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-import os
-import sys
+
 
 # Use Render/production DATABASE_URL if provided (Postgres on Render),
 # otherwise fall back to local MySQL config (docker-compose),
