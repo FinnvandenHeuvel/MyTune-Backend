@@ -6,11 +6,11 @@ from core.interface.api.views.auth import register
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-def health(request):
+def healthz(request):
     return JsonResponse({"status": "ok"})
 
 urlpatterns = [
-    path("health/", health),
+    path("healthz/", healthz),
     path("reviews/", reviews, name="reviews"),
     path("reviews/<int:pk>/", review_delete, name="review_delete"),
     path("me/", me, name="me"),
