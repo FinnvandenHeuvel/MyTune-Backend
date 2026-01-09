@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests (pytest)
         env:
-          DJANGO_SETTINGS_MODULE: app.settings_test   # 🔁 CHANGE if needed
+          DJANGO_SETTINGS_MODULE: core.settings_test 
         run: |
           pytest -q
 
