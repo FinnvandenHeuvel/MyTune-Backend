@@ -20,7 +20,9 @@ USE_I18N = getattr(base, "USE_I18N", True)
 USE_TZ = getattr(base, "USE_TZ", True)
 
 STATIC_URL = getattr(base, "STATIC_URL", "static/")
-DEFAULT_AUTO_FIELD = getattr(base, "DEFAULT_AUTO_FIELD", "django.db.models.BigAutoField")
+DEFAULT_AUTO_FIELD = getattr(
+    base, "DEFAULT_AUTO_FIELD", "django.db.models.BigAutoField"
+)
 
 # --- override DB for tests (SQLite) ---
 DATABASES = {
