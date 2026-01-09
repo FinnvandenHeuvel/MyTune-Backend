@@ -6,12 +6,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Install system dependencies required for mysqlclient
+# and create a non-root user in a single layer
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc default-libmysqlclient-dev pkg-config \
+    && apt-get install -y --no-install-recommends \
+        gcc \
+        default-libmysqlclient-dev \
+        pkg-config \
+    && addgroup --system app \
+    && adduser --system --ingroup app app \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user
-RUN addgroup --system app && adduser --system --ingroup app app
 
 # Install Python dependencies (better layer caching)
 COPY requirements.txt /app/
@@ -19,7 +23,11 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
 # Copy project files (make sure .dockerignore excludes secrets like .env)
-COPY . /app/
+# Copy only application code explicitly
+COPY manage.py /app/
+COPY core /app/core
+COPY app /app/app
+
 
 # Fix permissions for non-root user
 RUN chown -R app:app /app
