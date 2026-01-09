@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Env / secrets
+.env
+*.env
+.env.*
+**/.env
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs
+.venv/
+venv/
+
+# Editor / OS junk
+.DS_Store
+.idea/
+.vscode/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Local DB / files
+*.sqlite3
+media/
+staticfiles/
+
