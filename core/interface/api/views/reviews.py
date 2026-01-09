@@ -33,7 +33,7 @@ def reviews(request):
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def review_delete(request, pk):
-    ok, err = delete_review_as_admin(user=request.user, pk=pk)
+    _, err = delete_review_as_admin(user=request.user, pk=pk)
     if err == "Not allowed":
         return Response({"detail": err}, status=status.HTTP_403_FORBIDDEN)
     if err == "Not found":
