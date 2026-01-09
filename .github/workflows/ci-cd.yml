@@ -31,6 +31,8 @@ jobs:
           pip install -r requirements.txt
           # Test + lint tooling
           pip install pytest pytest-django ruff black
+          # Coverage tooling (enable later)
+          # pip install pytest-cov
 
       - name: Lint (ruff)
         run: |
@@ -43,9 +45,43 @@ jobs:
       - name: Run tests (pytest)
         run: |
           pytest -q
+          # With coverage (enable later):
+          # pytest -q --cov=. --cov-report=xml:coverage.xml
+
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies (optional)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
 
   deploy_and_verify:
-    needs: test
+    needs: [test, sonarcloud]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
