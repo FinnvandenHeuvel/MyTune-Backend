@@ -17,7 +17,15 @@ try:
 except ImportError:
     pass
 
-SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-secret-key")
+RUNNING_TESTS = ("pytest" in sys.argv) or ("test" in sys.argv)
+
+if RUNNING_TESTS:
+    # safe dummy key for tests only
+    SECRET_KEY = os.getenv("SECRET_KEY", "test-secret-key")
+else:
+    # required in dev/prod
+    SECRET_KEY = os.environ["SECRET_KEY"]
+
 DEBUG = os.getenv("DEBUG", "1") == "1"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
