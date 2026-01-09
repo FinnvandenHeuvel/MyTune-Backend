@@ -6,7 +6,6 @@ def get_reviews(*, artist_id=None, album_id=None):
 
 
 def create_new_review(*, user, validated_data):
-    # place for extra business rules if needed
     return repositories.create_review(user=user, data=validated_data)
 
 
