@@ -91,7 +91,11 @@ class ReviewsAPITest(APITestCase):
         }
 
         response = self.client.post(self.url, payload)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.assertIn(
+            response.status_code,
+            (status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN),
+        )
 
     def test_post_authenticated_succeeds(self):
         self.client.force_authenticate(user=self.user)

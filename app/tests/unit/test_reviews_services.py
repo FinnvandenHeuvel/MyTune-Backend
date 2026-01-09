@@ -45,7 +45,9 @@ def test_create_new_review_calls_repositories_create_review(monkeypatch):
         assert data == validated_data
         return expected
 
-    monkeypatch.setattr(reviews_service.repositories, "create_review", fake_create_review)
+    monkeypatch.setattr(
+        reviews_service.repositories, "create_review", fake_create_review
+    )
 
     out = reviews_service.create_new_review(user=user, validated_data=validated_data)
     assert out == expected
@@ -55,8 +57,16 @@ def test_delete_review_as_admin_denies_non_admin(monkeypatch):
     user = SimpleNamespace(is_staff=False, is_superuser=False)
 
     # Make sure selectors/repositories are NOT called
-    monkeypatch.setattr(reviews_service.selectors, "get_review_by_pk", lambda pk: pytest.fail("selector called"))
-    monkeypatch.setattr(reviews_service.repositories, "delete_review", lambda review: pytest.fail("repo called"))
+    monkeypatch.setattr(
+        reviews_service.selectors,
+        "get_review_by_pk",
+        lambda pk: pytest.fail("selector called"),
+    )
+    monkeypatch.setattr(
+        reviews_service.repositories,
+        "delete_review",
+        lambda review: pytest.fail("repo called"),
+    )
 
     ok, err = reviews_service.delete_review_as_admin(user=user, pk=1)
     assert ok is None
@@ -70,8 +80,14 @@ def test_delete_review_as_admin_returns_not_found(monkeypatch):
         assert pk == 999
         return None
 
-    monkeypatch.setattr(reviews_service.selectors, "get_review_by_pk", fake_get_review_by_pk)
-    monkeypatch.setattr(reviews_service.repositories, "delete_review", lambda review: pytest.fail("repo called"))
+    monkeypatch.setattr(
+        reviews_service.selectors, "get_review_by_pk", fake_get_review_by_pk
+    )
+    monkeypatch.setattr(
+        reviews_service.repositories,
+        "delete_review",
+        lambda review: pytest.fail("repo called"),
+    )
 
     ok, err = reviews_service.delete_review_as_admin(user=user, pk=999)
     assert ok is None
@@ -91,8 +107,12 @@ def test_delete_review_as_admin_deletes_when_admin_and_exists(monkeypatch):
         assert review is fake_review
         calls["deleted"] = True
 
-    monkeypatch.setattr(reviews_service.selectors, "get_review_by_pk", fake_get_review_by_pk)
-    monkeypatch.setattr(reviews_service.repositories, "delete_review", fake_delete_review)
+    monkeypatch.setattr(
+        reviews_service.selectors, "get_review_by_pk", fake_get_review_by_pk
+    )
+    monkeypatch.setattr(
+        reviews_service.repositories, "delete_review", fake_delete_review
+    )
 
     ok, err = reviews_service.delete_review_as_admin(user=user, pk=5)
     assert ok is True
