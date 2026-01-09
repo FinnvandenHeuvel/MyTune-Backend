@@ -1,11 +1,9 @@
 from django.urls import path
-from core.interface.api.views.reviews import reviews, review_delete
-from core.interface.api.views.profile import me, my_reviews
-from core.interface.api.views.auth import register
-
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-
+from core.interface.api.views.auth import register
+from core.interface.api.views.profile import me, my_reviews
+from core.interface.api.views.reviews import review_delete, reviews
 
 urlpatterns = [
     path("reviews/", reviews, name="reviews"),

@@ -1,20 +1,18 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
-from core.domain.models import Review
 from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+
+from core.domain.models import Review
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
         min_length=6,
-        style={'input_type': 'password'},
-        validators=[validate_password]
+        style={"input_type": "password"},
+        validators=[validate_password],
     )
-    password2 = serializers.CharField(
-        write_only=True,
-        style={'input_type': 'password'}
-    )
+    password2 = serializers.CharField(write_only=True, style={"input_type": "password"})
 
     class Meta:
         model = User
@@ -50,6 +48,7 @@ class MeSerializer(serializers.ModelSerializer):
     def get_is_admin(self, obj):
         return bool(obj.is_staff or obj.is_superuser)
 
+
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
 
@@ -67,4 +66,3 @@ class ReviewSerializer(serializers.ModelSerializer):
             "rating",
             "created_at",
         ]
-

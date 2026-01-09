@@ -1,7 +1,8 @@
-from django.urls import reverse
-from rest_framework.test import APITestCase, APIClient
-from rest_framework import status
 from django.contrib.auth.models import User
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+
 from core.domain.models import Review
 
 
@@ -13,8 +14,7 @@ class ReviewsAPITest(APITestCase):
 
         # Test user
         self.user = User.objects.create_user(
-            username="testuser",
-            password="password123"
+            username="testuser", password="password123"
         )
 
         # Create sample reviews
@@ -26,7 +26,7 @@ class ReviewsAPITest(APITestCase):
             album="Album X",
             album_id="A1",
             content="Nice track!",
-            rating=4
+            rating=4,
         )
 
         self.review2 = Review.objects.create(
@@ -37,7 +37,7 @@ class ReviewsAPITest(APITestCase):
             album="Album Y",
             album_id="A2",
             content="Loved it",
-            rating=5
+            rating=5,
         )
 
         self.review3 = Review.objects.create(
@@ -48,7 +48,7 @@ class ReviewsAPITest(APITestCase):
             album=None,
             album_id=None,
             content="Cool!",
-            rating=3
+            rating=3,
         )
 
     # ---------------------------
@@ -87,7 +87,7 @@ class ReviewsAPITest(APITestCase):
             "title": "My Review",
             "artist": "Random Artist",
             "content": "Nice!",
-            "rating": 5
+            "rating": 5,
         }
 
         response = self.client.post(self.url, payload)
@@ -103,7 +103,7 @@ class ReviewsAPITest(APITestCase):
             "album": "Album Z",
             "album_id": "A3",
             "content": "Amazing track!",
-            "rating": 5
+            "rating": 5,
         }
 
         response = self.client.post(self.url, payload)
@@ -115,13 +115,7 @@ class ReviewsAPITest(APITestCase):
         client = APIClient()
         client.force_authenticate(self.user)
 
-        payload = {
-            "title": "",
-            "artist": "Artist C",
-            "content": "",
-            "rating": ""
-        }
+        payload = {"title": "", "artist": "Artist C", "content": "", "rating": ""}
 
         response = client.post(self.url, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
