@@ -1,4 +1,4 @@
-from .settings import *
+from .settings import BASE_DIR
 
 DATABASES = {
     "default": {
@@ -7,6 +7,7 @@ DATABASES = {
     }
 }
 
+# Faster password hashing in tests
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]

@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from core.application.services import profile_service as profile_services
+from core.application.services import profile_service
 
 
 def test_get_my_reviews_calls_selectors_list_my_reviews(monkeypatch):
@@ -11,7 +11,7 @@ def test_get_my_reviews_calls_selectors_list_my_reviews(monkeypatch):
         assert user.username == "alice"
         return expected
 
-    monkeypatch.setattr(profile_services.selectors, "list_my_reviews", fake_list_my_reviews)
+    monkeypatch.setattr(profile_service.selectors, "list_my_reviews", fake_list_my_reviews)
 
-    out = profile_services.get_my_reviews(user=user)
+    out = profile_service.get_my_reviews(user=user)
     assert out == expected
