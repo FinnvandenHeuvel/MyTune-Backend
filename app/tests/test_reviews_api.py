@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from django.contrib.auth.models import User
-from core.models import Review
+from core.domain.models import Review
 
 
 class ReviewsAPITest(APITestCase):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from core.models import Review
+from core.domain.models import Review
 from django.contrib.auth.password_validation import validate_password
 
 

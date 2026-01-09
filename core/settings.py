@@ -66,7 +66,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'app.urls'
 
 TEMPLATES = [
     {
@@ -143,8 +143,38 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+import os
 import sys
 
+# Use Render/production DATABASE_URL if provided (Postgres on Render),
+# otherwise fall back to local MySQL config (docker-compose),
+# otherwise fall back to local sqlite file.
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    import dj_database_url
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+        )
+    }
+else:
+    # Local dev fallback (your current docker-compose MySQL)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("DB_NAME", "mytune"),
+            "USER": os.getenv("DB_USER", "mytune"),
+            "PASSWORD": os.getenv("DB_PASSWORD", "mytune"),
+            "HOST": os.getenv("DB_HOST", "db"),
+            "PORT": os.getenv("DB_PORT", "3306"),
+        }
+    }
+
+# Keep tests fast & isolated
 if "test" in sys.argv:
     DATABASES = {
         "default": {

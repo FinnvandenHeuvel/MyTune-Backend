@@ -4,4 +4,8 @@ pip~=25.2
 mysqlclient
 djangorestframework
 django-cors-headers
+gunicorn>=21.2
+dj-database-url>=2.1
+psycopg[binary]>=3.1
+
 
