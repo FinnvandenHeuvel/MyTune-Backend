@@ -9,13 +9,12 @@ WORKDIR /app
 # and create a non-root user in a single layer
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        gcc \
         default-libmysqlclient-dev \
+        gcc \
         pkg-config \
     && addgroup --system app \
     && adduser --system --ingroup app app \
     && rm -rf /var/lib/apt/lists/*
-
 
 # Install Python dependencies (better layer caching)
 COPY requirements.txt /app/
@@ -28,10 +27,8 @@ COPY manage.py /app/
 COPY core /app/core
 COPY app /app/app
 
-
 # Fix permissions for non-root user
 RUN chown -R app:app /app
-
 USER app
 
 # Render provides $PORT. Use gunicorn for production.
