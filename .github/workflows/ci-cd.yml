@@ -7,8 +7,13 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  test_and_sonar:
+    name: Test + Coverage + SonarCloud
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: read
 
     env:
       SECRET_KEY: test-secret-key
@@ -18,6 +23,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,9 +37,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           # Test + lint tooling
-          pip install pytest pytest-django ruff black
-          # Coverage tooling (enable later)
-          # pip install pytest-cov
+          pip install pytest pytest-django pytest-cov ruff black
 
       - name: Lint (ruff)
         run: |
@@ -42,46 +47,21 @@ jobs:
         run: |
           black --check .
 
-      - name: Run tests (pytest)
+      - name: Run tests (pytest + coverage xml)
         run: |
-          pytest -q
-          # With coverage (enable later):
-          # pytest -q --cov=. --cov-report=xml:coverage.xml
-
-  sonarcloud:
-    name: SonarCloud Scan
-    runs-on: ubuntu-latest
-    needs: test
-    permissions:
-      contents: read
-      pull-requests: read
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: Install dependencies (optional)
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pytest -q --cov=. --cov-report=xml:coverage.xml
 
       - name: SonarCloud scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=coverage.xml
 
   deploy_and_verify:
-    needs: [test, sonarcloud]
+    needs: [test_and_sonar]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
